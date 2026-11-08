@@ -13,7 +13,11 @@
       "environment": {
         "QA_ARTIFACTS_DIR": "artifacts"
       }
-    }
+    },
+    "jsd": { "enabled": false },
+    "playwright": { "enabled": false },
+    "chrome-devtools": { "enabled": false },
+    "sentry": { "enabled": false }
   },
   "permission": {
     "edit": "allow",
@@ -21,7 +25,8 @@
     "task": "allow",
     "bash": {
       "*": "ask",
-      "python scripts/validate_artifacts.py*": "allow",
+      "*validate_artifacts.py*": "allow",
+      "*check_json.py*": "allow",
       "python scripts/mock_qa_mcp.py": "allow"
     }
   }

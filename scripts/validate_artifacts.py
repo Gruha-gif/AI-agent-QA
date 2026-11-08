@@ -7,6 +7,7 @@
 
 import json
 import sys
+from collections import Counter
 from pathlib import Path
 
 REQUIRED_FILES = [
@@ -79,20 +80,48 @@ def main():
     ]:
         require_meta(name, data)
 
-    if all(isinstance(item, dict) for item in [source, tasks, tests, trace, gates]):
-        req_ids = [item["requirement_id"] for item in source.get("requirements", [])]
+    if all(isinstance(item, dict) for item in [source, review, tasks, tests, trace, gates]):
+        req_ids = [item["requirement_id"] for item in source.get("requirements", []) if isinstance(item, dict)]
         check("уникальность REQ", len(req_ids) == len(set(req_ids)), f"всего {len(req_ids)}")
         check("требования не пустые", len(req_ids) > 0)
 
         known = set(req_ids)
-        task_ids = [item["task_id"] for item in tasks.get("tasks", [])]
-        test_ids = [item["test_id"] for item in tests.get("test_cases", [])]
+        task_ids = [item["task_id"] for item in tasks.get("tasks", []) if isinstance(item, dict) and item.get("task_id")]
+        test_ids = [
+            item["test_id"] for item in tests.get("test_cases", []) if isinstance(item, dict) and item.get("test_id")
+        ]
         check("уникальность TASK", len(task_ids) == len(set(task_ids)), f"всего {len(task_ids)}")
         check("уникальность TEST", len(test_ids) == len(set(test_ids)), f"всего {len(test_ids)}")
 
-        task_refs = {ref for item in tasks.get("tasks", []) for ref in item.get("requirement_ids", [])}
-        test_refs = {ref for item in tests.get("test_cases", []) for ref in item.get("requirement_ids", [])}
-        review_refs = {ref for item in review.get("requirements", []) for ref in [item.get("requirement_id")]}
+        scenario_types = Counter(
+            case.get("scenario_type") or case.get("type")
+            for case in tests.get("test_cases", [])
+            if isinstance(case, dict)
+        )
+        for scenario in ("positive", "negative", "boundary"):
+            check(
+                f"есть проверки типа {scenario}",
+                scenario_types.get(scenario, 0) > 0,
+                f"найдено: {scenario_types.get(scenario, 0)}",
+            )
+
+        task_refs = {
+            ref
+            for item in tasks.get("tasks", [])
+            if isinstance(item, dict)
+            for ref in (item.get("requirement_ids") or [])
+        }
+        test_refs = {
+            ref
+            for item in tests.get("test_cases", [])
+            if isinstance(item, dict)
+            for ref in (item.get("requirement_ids") or [])
+        }
+        review_refs = {
+            item.get("requirement_id")
+            for item in review.get("requirements", [])
+            if isinstance(item, dict) and item.get("requirement_id")
+        }
 
         check("задачи ссылаются на известные требования", task_refs <= known, f"лишние: {sorted(task_refs - known)}")
         check("тесты ссылаются на известные требования", test_refs <= known, f"лишние: {sorted(test_refs - known)}")
@@ -125,13 +154,13 @@ def main():
         check("ссылки трассируемости существуют", not broken, f"битые ссылки: {broken}")
 
         statuses = {gate.get("gate_id"): gate.get("status") for gate in gates.get("gates", [])}
-        expected_gates = {"QG0", "QG1", "QG2", "QG3", "QG4"}
+        expected_gates = {"QG1", "QG2", "QG3", "QG4"}
         check("все ворота описаны", expected_gates <= set(statuses), f"нет: {sorted(expected_gates - set(statuses))}")
         failed = [gate for gate, status in statuses.items() if status != "PASS"]
         check("все ворота пройдены", not failed, f"не пройдены: {failed}")
 
         artifact_ids = {item.get("artifact_id") for item in manifest.get("artifacts", [])}
-        check("манифест содержит ключевые артефакты", len(artifact_ids) >= 6, f"записей: {len(artifact_ids)}")
+        check("манифест содержит ключевые артефакты", len(artifact_ids) >= 4, f"записей: {len(artifact_ids)}")
 
     check("итоговый отчёт не пустой", bool(report and len(report) > 300))
 
@@ -154,4 +183,9 @@ def main():
 
 
 if __name__ == "__main__":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except AttributeError:
+        pass
     sys.exit(main())

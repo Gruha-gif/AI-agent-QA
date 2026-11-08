@@ -1,0 +1,25 @@
+{
+  "run_id": "run-20261108-120000",
+  "page": "BOOK-101",
+  "scope": "создание закладки на Android",
+  "jira_project": "QA",
+  "qase_project": "QA",
+  "mode": "draft",
+  "artifacts": [
+    {"artifact_id": "requirements_source", "path": "requirements-source.json"},
+    {"artifact_id": "requirements_review", "path": "requirements-review.json"},
+    {"artifact_id": "task_design", "path": "task-design.json"},
+    {"artifact_id": "test_design", "path": "test-design.json"},
+    {"artifact_id": "traceability", "path": "traceability.json"},
+    {"artifact_id": "gate_results", "path": "gate-results.json"},
+    {"artifact_id": "final_report", "path": "final-report.md"}
+  ],
+  "meta": {
+    "run_id": "run-20261108-120000",
+    "baseline_id": "baseline-1",
+    "artifact_version": "1.0",
+    "producer": "qa-orchestrator",
+    "created_at": "2026-11-08T12:30:00Z",
+    "status": "draft"
+  }
+}

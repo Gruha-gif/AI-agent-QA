@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "run_id": "run-20261108-120000",
+    "baseline_id": "baseline-1",
+    "artifact_version": "1.0",
+    "producer": "qa-orchestrator",
+    "created_at": "2026-11-08T12:00:00Z",
+    "status": "draft"
+  },
+  "source": "confluence",
+  "page_id": "BOOK-101",
+  "title": "Закладки - создание закладки",
+  "version": "6",
+  "retrieved_at": "2026-11-08T12:00:00Z",
+  "source_type": "qa-mock_confluence_get_page",
+  "scope": "создание закладки на Android",
+  "requirements": [
+    {"requirement_id": "REQ-001", "ref": "FR-1", "text": "Поле «Название» обязательно для создания закладки."},
+    {"requirement_id": "REQ-002", "ref": "FR-2", "text": "Правила валидации названия: trim, запрет внутренних пробелов, только латинские буквы, длина 3..20."},
+    {"requirement_id": "REQ-003", "ref": "FR-3", "text": "При корректном названии закладка создаётся и отображается первой в списке пользователя (newest first)."},
+    {"requirement_id": "REQ-004", "ref": "FR-4", "text": "При некорректном названии показывается сообщение 'Некорректное название закладки'."},
+    {"requirement_id": "REQ-005", "ref": "FR-5", "text": "Название уникально без учёта регистра; удалённые записи не учитываются; при совпадении сообщение 'Закладка с таким названием уже существует'."},
+    {"requirement_id": "REQ-006", "ref": "FR-6", "text": "Лимит не более 50 неудалённых закладок; при попытке создать 51-ю показывается 'Достигнут лимит закладок'."}
+  ],
+  "raw_content": "(original content stored in Confluence BOOK-101 v6)",
+  "note": "sanitized copy created by qa-orchestrator from local mock source"
+}

@@ -1,0 +1,30 @@
+{
+  "run_id": "run-20261108-120000",
+  "gates": [
+    {"gate_id": "QG1", "status": "PASS", "notes": ["requirements-reviewer: qg1_passed=true; 6 nonblocking issues F-1..F-6 saved in requirements-review.json"]},
+    {"gate_id": "QG2", "status": "PASS", "notes": ["task-designer: tasks created, missing components and story points marked in task-design.json"]},
+    {"gate_id": "QG3", "status": "PASS", "notes": ["test-designer: tests created covering REQ-001..REQ-006; open questions listed in test-design.json"]},
+    {"gate_id": "QG4", "status": "PASS", "notes": ["All artifacts reference the same requirements-source.json; traceability mappings exist for all requirements"]}
+  ],
+  "qg2": {
+    "passed": true,
+    "notes": ["task-designer: tasks created, missing components and story points marked in task-design.json"]
+  },
+  "qg3": {
+    "passed": true,
+    "notes": ["test-designer: tests created covering REQ-001..REQ-006; open questions listed in test-design.json"]
+  },
+  "qg4": {
+    "passed": true,
+    "notes": ["All artifacts reference the same requirements-source.json; traceability mappings exist for all requirements"]
+  },
+  "final_decision": "PROCEED",
+  "meta": {
+    "run_id": "run-20261108-120000",
+    "baseline_id": "baseline-1",
+    "artifact_version": "1.0",
+    "producer": "qa-orchestrator",
+    "created_at": "2026-11-08T12:25:00Z",
+    "status": "draft"
+  }
+}
