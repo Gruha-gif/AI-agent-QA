@@ -1,0 +1,86 @@
+{
+  "meta": {
+    "run_id": "run-001",
+    "baseline_id": "base-book-101-v4",
+    "artifact_id": "requirements-review-run-001",
+    "artifact_version": 1,
+    "producer": "requirement-reviewer",
+    "skill": "requirement-review",
+    "created_at": "2026-11-08T10:18:00+03:00",
+    "status": "validated"
+  },
+  "requirements": [
+    {
+      "requirement_id": "REQ-001",
+      "finding_ids": [],
+      "status": "analyzed"
+    },
+    {
+      "requirement_id": "REQ-002",
+      "finding_ids": [],
+      "status": "analyzed"
+    },
+    {
+      "requirement_id": "REQ-003",
+      "finding_ids": [
+        "F-001"
+      ],
+      "status": "analyzed"
+    },
+    {
+      "requirement_id": "REQ-004",
+      "finding_ids": [],
+      "status": "analyzed"
+    },
+    {
+      "requirement_id": "REQ-005",
+      "finding_ids": [],
+      "status": "analyzed"
+    },
+    {
+      "requirement_id": "REQ-006",
+      "finding_ids": [],
+      "status": "analyzed"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "F-001",
+      "type": "AMBIGUITY",
+      "severity": "minor",
+      "blocking": false,
+      "requirement_ids": [
+        "REQ-003"
+      ],
+      "quote": "Порядок отображения списка описан как «в удобном для пользователя порядке». Правило сортировки не задано",
+      "impact": "Не влияет на факт создания закладки, но мешает проверить точное расположение в списке",
+      "question": "Какое правило сортировки списка считается корректным и нужно ли проверять порядок в этой задаче",
+      "question_id": "Q-001"
+    }
+  ],
+  "questions": [
+    {
+      "question_id": "Q-001",
+      "requirement_ids": [
+        "REQ-003"
+      ],
+      "text": "Какое правило сортировки списка закладок считается корректным",
+      "blocking": false,
+      "status": "open",
+      "owner": "product-team"
+    }
+  ],
+  "risks": [
+    {
+      "risk_id": "R-001",
+      "text": "Без правила сортировки проверка расположения закладки в списке может быть субъективной",
+      "requirement_ids": [
+        "REQ-003"
+      ]
+    }
+  ],
+  "readiness": {
+    "status": "ready",
+    "reason": "Критические и существенные проблемы не найдены, единственное замечание незначительное и не блокирует проектирование"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "qa-orchestrator",
+  "instructions": ["AGENTS.md"],
+  "skills": {
+    "paths": [".opencode/skills"]
+  },
+  "mcp": {
+    "qa-mock": {
+      "type": "local",
+      "command": ["python", "scripts/mock_qa_mcp.py"],
+      "enabled": true,
+      "environment": {
+        "QA_ARTIFACTS_DIR": "artifacts"
+      }
+    }
+  },
+  "permission": {
+    "edit": "allow",
+    "read": "allow",
+    "task": "allow",
+    "bash": {
+      "*": "ask",
+      "python scripts/validate_artifacts.py*": "allow",
+      "python scripts/mock_qa_mcp.py": "allow"
+    }
+  }
+}

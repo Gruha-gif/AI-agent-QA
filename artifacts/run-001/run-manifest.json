@@ -1,0 +1,118 @@
+{
+  "meta": {
+    "run_id": "run-001",
+    "baseline_id": "base-book-101-v4",
+    "artifact_id": "run-manifest-run-001",
+    "artifact_version": 1,
+    "producer": "qa-orchestrator",
+    "created_at": "2026-11-08T10:35:00+03:00",
+    "status": "validated"
+  },
+  "mode": "draft",
+  "source": {
+    "page_id": "BOOK-101",
+    "version": 4,
+    "origin": "local-mock"
+  },
+  "skills": [
+    {
+      "name": "requirement-review",
+      "version": "1.0"
+    },
+    {
+      "name": "task-design",
+      "version": "1.0"
+    },
+    {
+      "name": "test-design",
+      "version": "1.0"
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_id": "requirements-source-run-001",
+      "path": "requirements-source.json",
+      "version": 1,
+      "status": "validated"
+    },
+    {
+      "artifact_id": "requirements-review-run-001",
+      "path": "requirements-review.json",
+      "version": 1,
+      "status": "validated"
+    },
+    {
+      "artifact_id": "task-design-run-001",
+      "path": "task-design.json",
+      "version": 1,
+      "status": "validated"
+    },
+    {
+      "artifact_id": "test-design-run-001",
+      "path": "test-design.json",
+      "version": 1,
+      "status": "validated"
+    },
+    {
+      "artifact_id": "traceability-run-001",
+      "path": "traceability.json",
+      "version": 1,
+      "status": "validated"
+    },
+    {
+      "artifact_id": "gate-results-run-001",
+      "path": "gate-results.json",
+      "version": 1,
+      "status": "validated"
+    },
+    {
+      "artifact_id": "final-report-run-001",
+      "path": "final-report.md",
+      "version": 1,
+      "status": "validated"
+    }
+  ],
+  "stages": [
+    {
+      "stage": "requirements",
+      "status": "done",
+      "agent": "qa-orchestrator"
+    },
+    {
+      "stage": "requirement-review",
+      "status": "done",
+      "agent": "requirement-reviewer"
+    },
+    {
+      "stage": "task-design",
+      "status": "done",
+      "agent": "task-designer"
+    },
+    {
+      "stage": "test-design",
+      "status": "done",
+      "agent": "test-designer"
+    },
+    {
+      "stage": "traceability",
+      "status": "done",
+      "agent": "qa-orchestrator"
+    }
+  ],
+  "metrics": {
+    "requirements_total": 6,
+    "tasks_total": 3,
+    "tests_total": 11,
+    "requirement_coverage_percent": 100,
+    "task_coverage_percent": 100,
+    "scenario_coverage_percent": 100,
+    "findings_total": 1,
+    "blocking_findings": 0
+  },
+  "publish": {
+    "requested": false,
+    "status": "not_requested",
+    "reason": "режим draft"
+  },
+  "final_status": "SUCCESS"
+}

@@ -1,0 +1,376 @@
+{
+  "meta": {
+    "run_id": "run-001",
+    "baseline_id": "base-book-101-v4",
+    "artifact_id": "test-design-run-001",
+    "artifact_version": 1,
+    "producer": "test-designer",
+    "skill": "test-design",
+    "created_at": "2026-11-08T10:26:00+03:00",
+    "status": "validated"
+  },
+  "suites": [
+    {
+      "suite_id": "SUITE-01",
+      "name": "Создание закладки"
+    },
+    {
+      "suite_id": "SUITE-02",
+      "name": "Лимиты"
+    }
+  ],
+  "test_cases": [
+    {
+      "test_id": "TEST-001",
+      "title": "Создание закладки с корректным названием",
+      "requirement_ids": [
+        "REQ-001",
+        "REQ-003"
+      ],
+      "scenario_type": "positive",
+      "technique": "классы эквивалентности",
+      "preconditions": "пользователь авторизован, список закладок пуст",
+      "test_data": {
+        "name": "Alpha"
+      },
+      "steps": [
+        {
+          "action": "открыть форму создания закладки",
+          "expected": "форма открыта"
+        },
+        {
+          "action": "ввести название Alpha и сохранить",
+          "expected": "закладка создана и отображается в списке"
+        }
+      ],
+      "priority": "High",
+      "suite": "Создание закладки"
+    },
+    {
+      "test_id": "TEST-002",
+      "title": "Пустое название не создаёт закладку",
+      "requirement_ids": [
+        "REQ-001",
+        "REQ-004"
+      ],
+      "scenario_type": "negative",
+      "technique": "классы эквивалентности",
+      "preconditions": "пользователь авторизован",
+      "test_data": {
+        "name": ""
+      },
+      "steps": [
+        {
+          "action": "открыть форму создания закладки",
+          "expected": "форма открыта"
+        },
+        {
+          "action": "оставить название пустым и сохранить",
+          "expected": "закладка не создана, показана ошибка валидации"
+        }
+      ],
+      "priority": "High",
+      "suite": "Создание закладки"
+    },
+    {
+      "test_id": "TEST-003",
+      "title": "Название из двух символов отклоняется",
+      "requirement_ids": [
+        "REQ-002",
+        "REQ-004"
+      ],
+      "scenario_type": "boundary",
+      "technique": "граничные значения",
+      "preconditions": "пользователь авторизован",
+      "test_data": {
+        "name": "Ab"
+      },
+      "steps": [
+        {
+          "action": "ввести название Ab и сохранить",
+          "expected": "закладка не создана, показана ошибка валидации"
+        }
+      ],
+      "priority": "High",
+      "suite": "Создание закладки"
+    },
+    {
+      "test_id": "TEST-004",
+      "title": "Название из трёх символов принимается",
+      "requirement_ids": [
+        "REQ-002"
+      ],
+      "scenario_type": "boundary",
+      "technique": "граничные значения",
+      "preconditions": "пользователь авторизован, список пуст",
+      "test_data": {
+        "name": "Abc"
+      },
+      "steps": [
+        {
+          "action": "ввести название Abc и сохранить",
+          "expected": "закладка создана"
+        }
+      ],
+      "priority": "High",
+      "suite": "Создание закладки"
+    },
+    {
+      "test_id": "TEST-005",
+      "title": "Название из двадцати символов принимается",
+      "requirement_ids": [
+        "REQ-002"
+      ],
+      "scenario_type": "boundary",
+      "technique": "граничные значения",
+      "preconditions": "пользователь авторизован, список пуст",
+      "test_data": {
+        "name": "Abcdefghijklmnopqrst"
+      },
+      "steps": [
+        {
+          "action": "ввести название из 20 латинских букв и сохранить",
+          "expected": "закладка создана"
+        }
+      ],
+      "priority": "High",
+      "suite": "Создание закладки"
+    },
+    {
+      "test_id": "TEST-006",
+      "title": "Название из двадцати одного символа отклоняется",
+      "requirement_ids": [
+        "REQ-002",
+        "REQ-004"
+      ],
+      "scenario_type": "boundary",
+      "technique": "граничные значения",
+      "preconditions": "пользователь авторизован",
+      "test_data": {
+        "name": "Abcdefghijklmnopqrstu"
+      },
+      "steps": [
+        {
+          "action": "ввести название из 21 латинской буквы и сохранить",
+          "expected": "закладка не создана, показана ошибка валидации"
+        }
+      ],
+      "priority": "High",
+      "suite": "Создание закладки"
+    },
+    {
+      "test_id": "TEST-007",
+      "title": "Цифра в названии отклоняется",
+      "requirement_ids": [
+        "REQ-002",
+        "REQ-004"
+      ],
+      "scenario_type": "negative",
+      "technique": "классы эквивалентности",
+      "preconditions": "пользователь авторизован",
+      "test_data": {
+        "name": "Ab1"
+      },
+      "steps": [
+        {
+          "action": "ввести название Ab1 и сохранить",
+          "expected": "закладка не создана, показана ошибка валидации"
+        }
+      ],
+      "priority": "Medium",
+      "suite": "Создание закладки"
+    },
+    {
+      "test_id": "TEST-008",
+      "title": "Кириллица в названии отклоняется",
+      "requirement_ids": [
+        "REQ-002",
+        "REQ-004"
+      ],
+      "scenario_type": "negative",
+      "technique": "классы эквивалентности",
+      "preconditions": "пользователь авторизован",
+      "test_data": {
+        "name": "Абв"
+      },
+      "steps": [
+        {
+          "action": "ввести название Абв и сохранить",
+          "expected": "закладка не создана, показана ошибка валидации"
+        }
+      ],
+      "priority": "Medium",
+      "suite": "Создание закладки"
+    },
+    {
+      "test_id": "TEST-009",
+      "title": "Повтор названия блокирует создание",
+      "requirement_ids": [
+        "REQ-005"
+      ],
+      "scenario_type": "negative",
+      "technique": "классы эквивалентности",
+      "preconditions": "у пользователя уже есть закладка Alpha",
+      "test_data": {
+        "name": "Alpha"
+      },
+      "steps": [
+        {
+          "action": "ввести название Alpha и сохранить",
+          "expected": "вторая закладка не создана, показано сообщение «Закладка с таким названием уже существует»"
+        }
+      ],
+      "priority": "High",
+      "suite": "Создание закладки"
+    },
+    {
+      "test_id": "TEST-010",
+      "title": "Пятидесятая закладка создаётся",
+      "requirement_ids": [
+        "REQ-006"
+      ],
+      "scenario_type": "boundary",
+      "technique": "граничные значения",
+      "preconditions": "у пользователя 49 закладок",
+      "test_data": {
+        "existing": 49,
+        "name": "Fifty"
+      },
+      "steps": [
+        {
+          "action": "создать закладку с уникальным названием",
+          "expected": "закладка создана, всего 50 закладок"
+        }
+      ],
+      "priority": "Medium",
+      "suite": "Лимиты"
+    },
+    {
+      "test_id": "TEST-011",
+      "title": "Пятьдесят первая закладка блокируется",
+      "requirement_ids": [
+        "REQ-006"
+      ],
+      "scenario_type": "negative",
+      "technique": "граничные значения",
+      "preconditions": "у пользователя 50 закладок",
+      "test_data": {
+        "existing": 50,
+        "name": "FiftyOne"
+      },
+      "steps": [
+        {
+          "action": "ввести уникальное название и сохранить",
+          "expected": "закладка не создана, показано сообщение «Достигнут лимит закладок»"
+        }
+      ],
+      "priority": "Medium",
+      "suite": "Лимиты"
+    }
+  ],
+  "applicability": [
+    {
+      "requirement_id": "REQ-001",
+      "positive": true,
+      "negative": true,
+      "boundary": false,
+      "note": "обязательность проверяется позитивным и негативным сценарием, числовой границы нет"
+    },
+    {
+      "requirement_id": "REQ-002",
+      "positive": true,
+      "negative": true,
+      "boundary": true,
+      "note": "длина от 3 до 20 символов проверяется граничными значениями"
+    },
+    {
+      "requirement_id": "REQ-003",
+      "positive": true,
+      "negative": false,
+      "boundary": false,
+      "note": "создание проверяется позитивным сценарием, негативные случаи относятся к REQ-004"
+    },
+    {
+      "requirement_id": "REQ-004",
+      "positive": false,
+      "negative": true,
+      "boundary": true,
+      "note": "блокировка проверяется негативными и граничными сценариями"
+    },
+    {
+      "requirement_id": "REQ-005",
+      "positive": false,
+      "negative": true,
+      "boundary": false,
+      "note": "уникальность не имеет числовой границы, достаточно негативного сценария"
+    },
+    {
+      "requirement_id": "REQ-006",
+      "positive": true,
+      "negative": true,
+      "boundary": true,
+      "note": "лимит проверяется на значениях 49, 50 и 51 закладка"
+    }
+  ],
+  "coverage": [
+    {
+      "requirement_id": "REQ-001",
+      "test_ids": [
+        "TEST-001",
+        "TEST-002"
+      ]
+    },
+    {
+      "requirement_id": "REQ-002",
+      "test_ids": [
+        "TEST-003",
+        "TEST-004",
+        "TEST-005",
+        "TEST-006",
+        "TEST-007",
+        "TEST-008"
+      ]
+    },
+    {
+      "requirement_id": "REQ-003",
+      "test_ids": [
+        "TEST-001"
+      ]
+    },
+    {
+      "requirement_id": "REQ-004",
+      "test_ids": [
+        "TEST-003",
+        "TEST-006",
+        "TEST-007",
+        "TEST-008"
+      ]
+    },
+    {
+      "requirement_id": "REQ-005",
+      "test_ids": [
+        "TEST-009"
+      ]
+    },
+    {
+      "requirement_id": "REQ-006",
+      "test_ids": [
+        "TEST-010",
+        "TEST-011"
+      ]
+    }
+  ],
+  "open_questions": [
+    {
+      "question_id": "Q-001",
+      "text": "Какое правило сортировки списка закладок считается корректным",
+      "requirement_ids": [
+        "REQ-003"
+      ]
+    }
+  ],
+  "readiness": {
+    "status": "ready",
+    "reason": "Все требования покрыты проверками, применимость типов обоснована"
+  }
+}

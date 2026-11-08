@@ -1,0 +1,7 @@
+{
+  "code": "QA",
+  "suites": ["Создание закладки", "Лимиты"],
+  "required_fields": ["title", "suite", "preconditions", "steps", "expected_result", "priority"],
+  "priorities": ["High", "Medium", "Low"],
+  "case_template": "Название\n\nТребования\n\nПредусловия\n\nДанные\n\nШаги и ожидаемые результаты"
+}

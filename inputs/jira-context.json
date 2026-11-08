@@ -1,0 +1,8 @@
+{
+  "project_key": "QA",
+  "issue_types": ["Task", "Bug"],
+  "required_fields": ["summary", "description", "issuetype", "priority"],
+  "default_priority": "Medium",
+  "summary_template": "<функциональность>: <результат>",
+  "description_template": "Цель\n\nОписание\n\nКритерии приёмки\n\nСвязанные требования"
+}

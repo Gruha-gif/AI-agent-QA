@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "run_id": "run-001",
+    "baseline_id": "base-book-101-v4",
+    "artifact_id": "gate-results-run-001",
+    "artifact_version": 1,
+    "producer": "qa-orchestrator",
+    "created_at": "2026-11-08T10:33:00+03:00",
+    "status": "validated"
+  },
+  "overall_status": "PASS",
+  "gates": [
+    {
+      "gate_id": "QG0",
+      "name": "Входные данные и источник",
+      "status": "PASS",
+      "checked_at": "2026-11-08T10:11:00+03:00",
+      "checks": [
+        {
+          "name": "страница требований получена",
+          "expected": "BOOK-101",
+          "actual": "BOOK-101",
+          "status": "PASS"
+        },
+        {
+          "name": "версия источника известна",
+          "expected": "версия указана",
+          "actual": "версия 4",
+          "status": "PASS"
+        },
+        {
+          "name": "границы анализа заданы",
+          "expected": "scope указан",
+          "actual": "scope указан",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "gate_id": "QG1",
+      "name": "Анализ требований",
+      "status": "PASS",
+      "checked_at": "2026-11-08T10:20:00+03:00",
+      "checks": [
+        {
+          "name": "все требования разобраны",
+          "expected": "6 из 6",
+          "actual": "6 из 6",
+          "status": "PASS"
+        },
+        {
+          "name": "замечания подтверждены цитатами",
+          "expected": "1 из 1",
+          "actual": "1 из 1",
+          "status": "PASS"
+        },
+        {
+          "name": "блокирующие проблемы",
+          "expected": "нет",
+          "actual": "нет",
+          "status": "PASS"
+        },
+        {
+          "name": "готовность к проектированию",
+          "expected": "ready",
+          "actual": "ready",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "gate_id": "QG2",
+      "name": "Задачи Jira",
+      "status": "PASS",
+      "checked_at": "2026-11-08T10:27:00+03:00",
+      "checks": [
+        {
+          "name": "покрытие требований задачами",
+          "expected": "100%",
+          "actual": "100%",
+          "status": "PASS"
+        },
+        {
+          "name": "обязательные поля",
+          "expected": "заполнены",
+          "actual": "заполнены, пробелов нет",
+          "status": "PASS"
+        },
+        {
+          "name": "дубликаты внутри результата",
+          "expected": "нет",
+          "actual": "нет",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "gate_id": "QG3",
+      "name": "Тестовая модель Qase",
+      "status": "PASS",
+      "checked_at": "2026-11-08T10:29:00+03:00",
+      "checks": [
+        {
+          "name": "покрытие требований проверками",
+          "expected": "100%",
+          "actual": "100%",
+          "status": "PASS"
+        },
+        {
+          "name": "позитивные, негативные и граничные проверки",
+          "expected": "применимые типы покрыты",
+          "actual": "покрыты, неприменимость обоснована",
+          "status": "PASS"
+        },
+        {
+          "name": "шаги и ожидаемые результаты",
+          "expected": "у всех проверок",
+          "actual": "у 11 из 11",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "gate_id": "QG4",
+      "name": "Итоговая согласованность",
+      "status": "PASS",
+      "checked_at": "2026-11-08T10:34:00+03:00",
+      "checks": [
+        {
+          "name": "единая версия требований",
+          "expected": "base-book-101-v4",
+          "actual": "base-book-101-v4",
+          "status": "PASS"
+        },
+        {
+          "name": "ссылки трассируемости",
+          "expected": "все существуют",
+          "actual": "все существуют",
+          "status": "PASS"
+        },
+        {
+          "name": "противоречащее поведение",
+          "expected": "нет",
+          "actual": "нет",
+          "status": "PASS"
+        },
+        {
+          "name": "валидация артефактов",
+          "expected": "без ошибок",
+          "actual": "без ошибок",
+          "status": "PASS"
+        }
+      ]
+    }
+  ]
+}
