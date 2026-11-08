@@ -248,14 +248,30 @@ python scripts/mock_qa_mcp.py
 
 ## Публикация в GitHub
 
+Репозиторий: <https://github.com/Gruha-gif/AI-agent-QA>
+
+В нём уже есть начальный коммит с пустым README, поэтому истории нужно объединить:
+
 ```bash
 cd C:\work\oc\qa-multi-agent
-git init
-git add .
-git commit -m "QA multi-agent system for OpenCode"
-git branch -M main
-git remote add origin https://github.com/<user>/<repo>.git
+git remote add origin https://github.com/Gruha-gif/AI-agent-QA.git
+git fetch origin
+git pull origin main --allow-unrelated-histories --no-rebase
+```
+
+Если появится конфликт в `README.md`, оставьте версию проекта:
+
+```bash
+git checkout --ours README.md
+git add README.md
+git commit -m "Merge GitHub README with project"
 git push -u origin main
+```
+
+Если начальный коммит на GitHub не нужен и его можно перезаписать, вместо слияния допустим принудительный push:
+
+```bash
+git push -u origin main --force
 ```
 
 Ссылку на репозиторий можно сдавать после успешного `git push`.
