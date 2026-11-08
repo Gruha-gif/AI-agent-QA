@@ -52,7 +52,7 @@ def require_meta(name, data):
 
 
 def main():
-    run_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("artifacts/run-001")
+    run_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("artifacts/runs/run-001")
     if not run_dir.exists():
         print(f"Каталог не найден: {run_dir}")
         return 1

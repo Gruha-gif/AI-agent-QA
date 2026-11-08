@@ -1,108 +1,100 @@
 # QA Multi-Agent System для OpenCode
 
-Мультиагентная система для анализа требований, проектирования задач Jira и тестовой модели Qase. Собрана на базе Agent Instructions и трёх Skills: `requirement-review`, `task-design`, `test-design`.
+Мультиагентная система для анализа требований, создания задач Jira и тестовой модели Qase. Построена на Agent Instruction, трёх Skills и инструментах доступа к внешним системам.
 
 ## Что делает система
 
 1. Оркестратор получает требования из Confluence и сохраняет исходный артефакт.
 2. Агент `requirement-reviewer` анализирует требования и проверяет Quality Gate 1.
 3. После прохождения ворот параллельно запускаются `task-designer` и `test-designer`.
-4. Каждый этап сохраняет результат в `artifacts/<run_id>/`.
+4. Каждый этап сохраняет результат: markdown-артефакт для чтения и JSON для проверки.
 5. Оркестратор собирает трассируемость, проверяет QG2-QG4 и формирует итоговый отчёт.
+6. В режиме `publish` создаются записи в Jira и Qase, сохраняются их идентификаторы.
 
-## Архитектура
+## Агенты
 
-| Компонент | Роль | Файл |
+| Агент | Роль | Режим |
 | --- | --- | --- |
-| `qa-orchestrator` | ведёт флоу, проверяет Quality Gates, собирает отчёт | `.opencode/agent/qa-orchestrator.md` |
-| `requirement-reviewer` | анализирует требования | `.opencode/agent/requirement-reviewer.md` |
-| `task-designer` | проектирует задачи Jira | `.opencode/agent/task-designer.md` |
-| `test-designer` | проектирует проверки Qase | `.opencode/agent/test-designer.md` |
-| Skill `requirement-review` | методика анализа требований | `.opencode/skills/requirement-review/SKILL.md` |
-| Skill `task-design` | методика проектирования задач | `.opencode/skills/task-design/SKILL.md` |
-| Skill `test-design` | методика проектирования тестов | `.opencode/skills/test-design/SKILL.md` |
-| Command `/qa-flow` | запуск полного флоу | `.opencode/command/qa-flow.md` |
-| MCP `qa-mock` | Confluence, Jira и Qase для локального запуска | `scripts/mock_qa_mcp.py` |
-| Валидатор | проверка артефактов и связей | `scripts/validate_artifacts.py` |
+| `qa-orchestrator` | ведёт флоу, управляет субагентами, проверяет Quality Gates, собирает отчёт | primary |
+| `requirement-reviewer` | анализ требований на противоречия, неоднозначности, пробелы и проверяемость | subagent |
+| `task-designer` | проектирование задач Jira по проверенным требованиям | subagent |
+| `test-designer` | проектирование проверок Qase: positive, negative, boundary | subagent |
 
-Оркестратор ничего не проектирует сам: он управляет специализированными агентами и отвечает за порядок этапов и качество результата.
+Оркестратор не выполняет работу субагентов сам. Субагенты не вызывают друг друга и не изменяют внешние системы.
 
-## Схема флоу
+## Skills
+
+| Skill | Назначение | Артефакт |
+| --- | --- | --- |
+| `requirement-review` | методика анализа требований | Requirement Review |
+| `task-design` | методика проектирования задач | Jira Tasks |
+| `test-design` | методика проектирования проверок | Test Model |
+
+## Поток работ
 
 ```text
-Запрос пользователя
-        |
-        v
-qa-orchestrator: получение требований из Confluence
-        |
-        v
-requirements-source.json
-        |
-        v
+Confluence
+    |
+    v
+qa-orchestrator: requirements-source.json
+    |
+    v
 requirement-reviewer + skill requirement-review
-        |
-        v
-requirements-review.json  -->  QG1
-        |                        |
-        |                        +-- FAIL --> вопрос пользователю, статус BLOCKED
-        v PASS
-   +---------------------------+
-   |                           |
-   v                           v
-task-designer               test-designer
-skill task-design           skill test-design
-   |                           |
-   v                           v
-task-design.json            test-design.json
-   |                           |
-   +-------> QG2, QG3 <--------+
-                |
-                v
-traceability.json  -->  QG4
-                |
-                v
-gate-results.json, run-manifest.json, final-report.md
+    |
+    v
+Requirement Review  -->  QG1
+    |                     |
+    |                     +-- FAIL --> вопрос пользователю, статус BLOCKED
+    v PASS
+task-designer (skill task-design)   test-designer (skill test-design)
+    |                                   |
+    v                                   v
+Jira Tasks Artifact (QG2)          Test Model Artifact (QG3)
+    |                                   |
+    +---------------+-------------------+
+                    v
+            traceability.json --> QG4
+                    v
+      gate-results.json, run-manifest.json, final-report.md
 ```
 
-## Структура репозитория
+## Структура проекта
 
 ```text
-.
-├── opencode.json
+qa-multi-agent/
 ├── AGENTS.md
-├── README.md
-├── .opencode
-│   ├── agent
+├── opencode.json
+├── .opencode/
+│   ├── agents/
 │   │   ├── qa-orchestrator.md
 │   │   ├── requirement-reviewer.md
 │   │   ├── task-designer.md
 │   │   └── test-designer.md
-│   ├── command
-│   │   └── qa-flow.md
-│   └── skills
-│       ├── requirement-review/SKILL.md
-│       ├── task-design/SKILL.md
-│       └── test-design/SKILL.md
-├── inputs
+│   ├── skills/
+│   │   ├── requirement-review/SKILL.md
+│   │   ├── task-design/SKILL.md
+│   │   └── test-design/SKILL.md
+│   └── tools/
+│       └── confluence.ts
+├── artifacts/
+│   ├── requirement-review/1.md
+│   ├── jira-tasks/1.md
+│   ├── test-model/1.md
+│   └── runs/
+│       ├── run-001/
+│       └── run-20261108-120000/
+├── inputs/
 │   ├── confluence/BOOK-101.md
 │   ├── jira-context.json
 │   └── qase-context.json
-├── scripts
+├── scripts/
 │   ├── mock_qa_mcp.py
 │   ├── check_json.py
-│   └── validate_artifacts.py
-└── artifacts
-    ├── run-001
-    │   ├── requirements-source.json
-    │   ├── requirements-review.json
-    │   ├── task-design.json
-    │   ├── test-design.json
-    │   ├── traceability.json
-    │   ├── gate-results.json
-    │   ├── run-manifest.json
-    │   └── final-report.md
-    └── run-20261108-120000
-        └── (те же артефакты живого прогона)
+│   ├── validate_artifacts.py
+│   └── export_artifacts.py
+└── evals/
+    ├── dataset/golden_dataset.json
+    └── evaluator.py
 ```
 
 ## Требования
@@ -118,106 +110,83 @@ cd C:\work\oc\qa-multi-agent
 opencode
 ```
 
-После изменения конфигурации или файлов агентов перезапустите OpenCode: конфигурация читается один раз при старте.
+После изменения конфигурации или файлов агентов перезапустите OpenCode.
 
-В интерактивной сессии выполните команду:
-
-```text
-/qa-flow page=BOOK-101 scope="создание закладки на Android" jira_project=QA qase_project=QA mode=draft
-```
-
-Без аргументов команда использует значения по умолчанию из `inputs/`.
-
-Можно обратиться к агенту обычным текстом:
+В интерактивной сессии:
 
 ```text
-Запусти QA-флоу для страницы BOOK-101 в режиме draft
+/qa-flow page=BOOK-101 scope="создание закладки на Android" mode=draft
 ```
 
-## Режимы работы
+Без аргументов используются значения по умолчанию из `inputs/`.
+
+Неинтерактивный запуск:
+
+```bash
+opencode run "page=BOOK-101 scope=создание закладки на Android mode=draft"
+```
+
+## Режимы
 
 - `draft` - результаты сохраняются только в артефакты, записи в Jira и Qase не создаются. Значение по умолчанию.
 - `publish` - после прохождения QG4 оркестратор создаёт задачи и проверки через MCP и сохраняет реальные ID и ссылки.
 
-## Контрольный прогон
+## Результаты
 
-В репозитории два прогона.
+### Markdown-артефакты
 
-### `artifacts/run-001` - эталонный набор артефактов
+- `artifacts/requirement-review/1.md` - результат анализа требований.
+- `artifacts/jira-tasks/1.md` - подготовленные задачи.
+- `artifacts/test-model/1.md` - тестовая модель с покрытием и применимостью.
 
-- 6 требований проанализированы, найдено 1 незначительное замечание;
-- 3 задачи разработки;
-- 11 проверок: позитивные, негативные и граничные;
-- покрытие требований 100 процентов, все гейты пройдены.
+### Прогоны
 
-### `artifacts/run-20261108-120000` - результат работы агентов
+`artifacts/runs/run-20261108-120000` - живой прогон агентов:
 
-Этот прогон выполнен командой `opencode run "page=BOOK-101 scope=создание закладки на Android mode=draft"`:
+- 6 требований разобрано, только неблокирующие замечания;
+- 6 задач: TASK-001 - TASK-006;
+- 14 проверок: 4 позитивные, 5 негативных, 5 граничных;
+- трассируемость по всем требованиям;
+- QG1-QG4 = PASS, итоговый статус SUCCESS, режим draft.
 
-- `requirement-reviewer` разобрал 6 требований и оставил только неблокирующие замечания;
-- `task-designer` подготовил 6 задач: TASK-001 - TASK-006;
-- `test-designer` подготовил 14 проверок: 4 позитивные, 5 негативных, 5 граничных;
-- оркестратор собрал трассируемость по всем 6 требованиям;
-- QG1, QG2, QG3 и QG4 пройдены, итоговый статус SUCCESS, режим draft.
+`artifacts/runs/run-001` - эталонный набор артефактов по контрактам Skills: 6 требований, 3 задачи, 11 проверок.
 
-Проверка артефактов:
+## Проверка
 
 ```bash
-python scripts/validate_artifacts.py artifacts/run-20261108-120000
+python scripts/validate_artifacts.py artifacts/runs/run-20261108-120000
+python evals/evaluator.py artifacts/runs/run-20261108-120000
+python scripts/export_artifacts.py artifacts/runs/run-20261108-120000
 ```
 
-Ожидаемый результат: 33 проверки, 0 ошибок, сообщение «артефакты согласованы». То же самое для `artifacts/run-001`.
+Ожидаемый результат:
+
+- валидатор: 33 проверки, 0 ошибок;
+- evaluator: 7 проверок, 0 провалов.
 
 ## Интеграции
 
-### Локальный демонстрационный MCP
+### MCP qa-mock
 
-`qa-mock` запускается как локальный MCP-сервер и предоставляет три инструмента:
+Локальный сервер  `scripts/mock_qa_mcp.py` предоставляет:
 
 | Инструмент | Назначение |
 | --- | --- |
-| `confluence_get_page` | читает страницу требований из `inputs/confluence` |
-| `jira_create_issue` | записывает задачу в `artifacts/published/jira-issues.json` |
-| `qase_create_case` | записывает проверку в `artifacts/published/qase-cases.json` |
+| `confluence_get_page` | чтение страницы требований из `inputs/confluence` |
+| `jira_create_issue` | запись задачи в `artifacts/published/jira-issues.json` |
+| `qase_create_case` | запись проверки в `artifacts/published/qase-cases.json` |
 
-Проверить сервер вручную:
+Проверка сервера: `python scripts/mock_qa_mcp.py`.
 
-```bash
-python scripts/mock_qa_mcp.py
-```
+### Custom Tool для Confluence
 
-Сервер обменивается JSON-RPC сообщениями через stdio и поддерживает `initialize`, `tools/list`, `tools/call` и `ping`.
+`.opencode/tools/confluence.ts` читает страницу Confluence напрямую через REST API по `pageId`. Требует переменные окружения `CONFLUENCE_URL`, `CONFLUENCE_EMAIL`, `CONFLUENCE_API_TOKEN`. Инструмент выполняет только чтение.
 
-### Реальные системы
+### Настоящие Jira и Qase
 
-В текущем окружении уже подключён MCP-сервер `atlassian` с инструментами вида `atlassian_confluence_get_page` и `atlassian_jira_create_issue`. Чтобы использовать его вместо демо-сервера:
-
-1. В промптах оркестратора замените имя инструмента `confluence_get_page` на `atlassian_confluence_get_page`.
-2. Для создания задач используйте `atlassian_jira_create_issue`, для чтения метаданных - остальные инструменты Jira.
-3. Отключите `qa-mock` в `opencode.json`: `"qa-mock": { "enabled": false }`.
-
-Для отдельного запуска с настоящими Confluence, Jira и Qase:
-
-1. Добавьте MCP-серверы в `opencode.json` в раздел `mcp` и передайте токены через переменные окружения.
+1. Добавьте MCP-серверы в `opencode.json` и передайте токены через переменные окружения.
 2. Отключите `qa-mock`: `"qa-mock": { "enabled": false }`.
-3. Убедитесь, что имена инструментов в промптах агентов соответствуют вашему MCP-серверу.
-
-Пример удалённого сервера:
-
-```json
-{
-  "mcp": {
-    "atlassian": {
-      "type": "remote",
-      "url": "https://your-mcp-host/mcp",
-      "enabled": true,
-      "headers": {
-        "Authorization": "Bearer {env:ATLASSIAN_TOKEN}"
-      }
-    }
-  }
-}
-```
+3. Сверьте имена инструментов в промптах агентов с вашим MCP-сервером.
 
 ## Quality Gates
 
@@ -226,18 +195,16 @@ python scripts/mock_qa_mcp.py
 | QG1 | все требования разобраны, замечания подтверждены цитатами, блокирующих проблем нет |
 | QG2 | задачи связаны с требованиями, покрытие полное, поля заполнены |
 | QG3 | проверки покрывают требования, применимые типы сценариев обоснованы |
-| QG4 | единая версия требований, все ссылки существуют, артефакты валидны |
+| QG4 | единая версия требований, ссылки существуют, артефакты валидны |
 
-Ворота не пройдены - переход к следующему этапу запрещён, статус фиксируется в `gate-results.json`.
-
-## Соответствие домашнему заданию
+## Соответствие заданию
 
 | Пункт задания | Реализация |
 | --- | --- |
-| Декомпозиция инструкции на агентов | 4 агента в `.opencode/agent` |
-| Подключение Skills и интеграций | 3 Skills и MCP `qa-mock` в `opencode.json` |
+| Декомпозиция инструкции на агентов | 4 агента в `.opencode/agents` |
+| Подключение Skills и интеграций | 3 Skills, MCP `qa-mock`, Custom Tool `confluence.ts` |
 | Настройка взаимодействия агентов | субагенты вызываются оркестратором, обмен через артефакты |
-| Запуск флоу и проверка | живой прогон `run-20261108-120000`, эталон `run-001` и валидатор на 33 проверки |
+| Запуск флоу и проверка | живой прогон `run-20261108-120000`, валидатор и evaluator |
 
 ## Ограничения
 
@@ -250,8 +217,6 @@ python scripts/mock_qa_mcp.py
 
 Репозиторий: <https://github.com/Gruha-gif/AI-agent-QA>
 
-В нём уже есть начальный коммит с пустым README, поэтому истории нужно объединить:
-
 ```bash
 cd C:\work\oc\qa-multi-agent
 git remote add origin https://github.com/Gruha-gif/AI-agent-QA.git
@@ -259,7 +224,7 @@ git fetch origin
 git pull origin main --allow-unrelated-histories --no-rebase
 ```
 
-Если появится конфликт в `README.md`, оставьте версию проекта:
+При конфликте в `README.md` оставьте версию проекта:
 
 ```bash
 git checkout --ours README.md
@@ -267,11 +232,3 @@ git add README.md
 git commit -m "Merge GitHub README with project"
 git push -u origin main
 ```
-
-Если начальный коммит на GitHub не нужен и его можно перезаписать, вместо слияния допустим принудительный push:
-
-```bash
-git push -u origin main --force
-```
-
-Ссылку на репозиторий можно сдавать после успешного `git push`.

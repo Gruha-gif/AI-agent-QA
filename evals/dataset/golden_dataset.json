@@ -1,0 +1,14 @@
+{
+  "name": "bookmarks-basic",
+  "page": "BOOK-101",
+  "scope": "создание закладки на Android",
+  "expectations": {
+    "requirements_min": 6,
+    "tasks_min": 3,
+    "tests_min": 9,
+    "required_types": ["positive", "negative", "boundary"],
+    "coverage_percent_min": 100,
+    "gates_required": ["QG1", "QG2", "QG3", "QG4"],
+    "max_blocking_findings": 0
+  }
+}
